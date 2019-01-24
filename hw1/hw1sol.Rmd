@@ -1,5 +1,6 @@
 ---
 title: "Biostat M280 Homework 1"
+author: "Xinrui Zhang UID:605231530"
 subtitle: Due Jan 25 @ 11:59PM
 output: html_document
 ---
@@ -29,10 +30,22 @@ The `/home/m280data/NYCHVS` folder on teaching server contains a data set from t
 Please, do **not** put these data files into Git; they are big. Also do **not** copy them into your directory. Just read from the data folder `/home/m280data/NYCHVS` directly. Use Bash commands to answer following questions.
 
 1. Display the first few lines of `NYCHVS_1991.csv`.
+```{bash}
+head -4 /home/m280data/NYCHVS/NYCHVS_1991.csv
+```
+
 
 1. Display number of lines in each `csv` file.
+```{bash}
+wc -l /home/m280data/NYCHVS/*.csv
+```
+
 
 0. Display the 3 files that have the least number of lines
+```{bash}
+wc -l /home/m280data/NYCHVS/*.csv | sort | head -3
+```
+
 
 0. What's the output of following bash script?
     ```{bash, eval=FALSE}
@@ -41,8 +54,15 @@ Please, do **not** put these data files into Git; they are big. Also do **not** 
         ls $datafile
       done
     ```
+display all csv files in the directory `/home/m280data/NYCHVS` without changing your current directory
 
 0. What unique values does the second variable `borough` take in `NYCHVS_1991.csv`? Tabulate how many times each value appears.
+```{bash}
+grep borough /home/m280data/NYCHVS/NYCHVS_1991.csv
+awk -F, '{print$2}' /home/m280data/NYCHVS/NYCHVS_1991.csv | sort | uniq -c
+# uniq -c shows how many times this element occurs in the frofie
+```
+Thus `borough` takes 1,2,3,4,5 as its unique values 
 
 ## Q3. More fun with shell
 
@@ -51,6 +71,14 @@ Please, do **not** put these data files into Git; they are big. Also do **not** 
     curl https://www.gutenberg.org/files/1342/1342.txt > pride_and_prejudice.txt
     ```
 Do **not** put this text file `pride_and_prejudice.txt` in Git. Using a `for` loop, how would you tabulate the number of times each of the four characters is mentioned?
+```{bash}
+for namei in Elizabeth Jane Lydia Darcy
+do
+echo $namei
+grep -o $namei /home/suedez/pride_and_prejudice.txt | wc -l
+done
+```
+
 
 0. What's the difference between the following two commands?
     ```{bash eval=FALSE}
@@ -60,6 +88,7 @@ Do **not** put this text file `pride_and_prejudice.txt` in Git. Using a `for` lo
     ```{bash eval=FALSE}
     echo 'hello, world' >> test2.txt
     ```
+The first one write `hello, world` into a text file by covering the old contents of that text file, while the second one just append `hello, world` to the text file without changing old contents
 
 0. Using your favorite text editor (e.g., `vi`), type the following and save the file as `middle.sh`:
     ```{bash eval=FALSE}
