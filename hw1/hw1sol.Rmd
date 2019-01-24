@@ -117,6 +117,7 @@ $$
 for both methods.
 ```{bash,eval=FALSE}
 curl http://hua-zhou.github.io/teaching/biostatm280-2019winter/slides/02-linux/runSim.R > runSim.R
+R CMD BATCH '--args n=10 seed=280 dist="t1" rep=1' runSim.R
 ```
 
 
