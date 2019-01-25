@@ -31,7 +31,7 @@ The `/home/m280data/NYCHVS` folder on teaching server contains a data set from t
 1. Display the first few lines of `NYCHVS_1991.csv`.
 
     **SOLUTION**
-```{bash echo=TRUE}
+    ```{bash}
     head -4 /home/m280data/NYCHVS/NYCHVS_1991.csv
     ```
 
@@ -174,7 +174,6 @@ for both methods.
     Rscript autoSim.R seed=280 rep=50
     ```
   
-
 3. Write an R script to collect simulation results from output files and print average MSEs in a table of format
 
 | $n$ | Method   | Gaussian | $t_5$ | $t_1$ |
