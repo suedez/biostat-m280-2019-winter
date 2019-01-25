@@ -27,44 +27,55 @@ The `/home/m280data/NYCHVS` folder on teaching server contains a data set from t
     ```{bash}
     ls -l /home/m280data/NYCHVS
     ```
-Please, do **not** put these data files into Git; they are big. Also do **not** copy them into your directory. Just read from the data folder `/home/m280data/NYCHVS` directly. Use Bash commands to answer following questions.
 
 1. Display the first few lines of `NYCHVS_1991.csv`.
-```{bash}
-head -4 /home/m280data/NYCHVS/NYCHVS_1991.csv
-```
+
+    **SOLUTION**
+```{bash echo=TRUE}
+    head -4 /home/m280data/NYCHVS/NYCHVS_1991.csv
+    ```
 
 
-1. Display number of lines in each `csv` file.
-```{bash}
-wc -l /home/m280data/NYCHVS/*.csv
-```
+2. Display number of lines in each `csv` file.
+
+    **SOLUTION**
+    ```{bash}
+    wc -l /home/m280data/NYCHVS/*.csv
+    ```
 
 
-0. Display the 3 files that have the least number of lines
-```{bash}
-wc -l /home/m280data/NYCHVS/*.csv | sort | head -3
-```
+3. Display the 3 files that have the least number of lines
+
+    **SOLUTION**
+    ```{bash}
+    wc -l /home/m280data/NYCHVS/*.csv | sort | head -3
+    ```
 
 
-0. What's the output of following bash script?
+4. What's the output of following bash script?
     ```{bash, eval=FALSE}
     for datafile in /home/m280data/NYCHVS/*.csv
       do
         ls $datafile
       done
     ```
-It displays all csv files in the directory `/home/m280data/NYCHVS` without changing your current directory
 
-0. What unique values does the second variable `borough` take in `NYCHVS_1991.csv`? Tabulate how many times each value appears.
-```{bash}
-# to see which coloumn variable 'borough' situates in
-grep borough /home/m280data/NYCHVS/NYCHVS_1991.csv
+    **SOLUTION**
 
-# 'uniq -c' shows how many times one element occurs in the file
-awk -F, '{print$2}' /home/m280data/NYCHVS/NYCHVS_1991.csv | sort | uniq -c | head -5
-```
-Thus `borough` takes 1,2,3,4,5 as its unique values 
+    It displays all csv files in the directory `/home/m280data/NYCHVS` without changing your current directory
+
+5. What unique values does the second variable `borough` take in `NYCHVS_1991.csv`? Tabulate how many times each value appears.
+
+    **SOLUTION**
+    
+    ```{bash}
+    # to see which coloumn variable 'borough' situates in
+    grep borough /home/m280data/NYCHVS/NYCHVS_1991.csv
+
+    # 'uniq -c' shows how many times one element occurs in the file
+    awk -F, '{print$2}' /home/m280data/NYCHVS/NYCHVS_1991.csv | sort | uniq -c | head -5
+    ```
+    Thus `borough` takes 1,2,3,4,5 as its unique values 
 
 ## Q3. More fun with shell
 
@@ -72,18 +83,19 @@ Thus `borough` takes 1,2,3,4,5 as its unique values
     ```{bash, eval=FALSE}
     curl https://www.gutenberg.org/files/1342/1342.txt > pride_and_prejudice.txt
     ```
-Do **not** put this text file `pride_and_prejudice.txt` in Git. Using a `for` loop, how would you tabulate the number of times each of the four characters is mentioned?
-```{bash}
-for namei in Elizabeth Jane Lydia Darcy
-do
-echo $namei
-grep -o $namei /home/suedez/pride_and_prejudice.txt | wc -l
-echo
-done
-```
+
+    **SOLUTION**
+    ```{bash}
+    for namei in Elizabeth Jane Lydia Darcy
+     do
+      echo $namei
+      grep -o $namei /home/suedez/pride_and_prejudice.txt | wc -l
+      echo
+     done
+    ```
 
 
-0. What's the difference between the following two commands?
+2. What's the difference between the following two commands?
     ```{bash eval=FALSE}
     echo 'hello, world' > test1.txt
     ```
@@ -91,23 +103,39 @@ done
     ```{bash eval=FALSE}
     echo 'hello, world' >> test2.txt
     ```
-The first one write `hello, world` into a text file by covering the old contents of that text file, while the second one just append `hello, world` to the text file without changing old contents.
 
-0. Using your favorite text editor (e.g., `vi`), type the following and save the file as `middle.sh`:
+    **SOLUTION**
+  
+    The first one write `hello, world` into a text file by covering the old contents of that text file, while the second one just append `hello, world` to the text file without changing old contents.
+
+3. Using your favorite text editor (e.g., `vi`), type the following and save the file as `middle.sh`:
     ```{bash eval=FALSE}
     #!/bin/sh
     # Select lines from the middle of a file.
     # Usage: bash middle.sh filename end_line num_lines
     head -n "$2" "$1" | tail -n "$3"
     ```
-Using `chmod` make the file executable by the owner, and run 
+
+    **SOLUTION**
+  
+    1) After edit, let't look at the file `middle.sh`
+    ```{bash}
+    cat middle.sh
+    ```
+   
+    2) Using `chmod` make the file executable by the owner, and run 
     ```{bash eval=TRUE}
+    chmod u+x middle.sh
     ./middle.sh pride_and_prejudice.txt 20 5
     ```
-`"$2"`means take the second input as the input for `n` of `head -n`; `"$1"` means take the first input as the input for `filename`; `"$3"` means take the third input as input for `n` of `tail -n`.
-The first line tells the system to use `/bin/sh` as the interprater to run the following script.
+    
+    3) Explain the output. Explain the meaning of `"$1"`, `"$2"`, and `"$3"` in this shell script. Why do we need the first line of the shell script?
 
-Explain the output. Explain the meaning of `"$1"`, `"$2"`, and `"$3"` in this shell script. Why do we need the first line of the shell script?
+    `"$2"`means take the second input as the input for `n` of `head -n`; `"$1"` means take the first input as the   input for `filename`; `"$3"` means take the third input as input for `n` of `tail -n`.
+    
+    The first line tells the system to use `/bin/sh` as the interprater to run the following script.
+
+
 
 ## Q4. R Batch Run
 
@@ -118,35 +146,33 @@ $$
   \frac{\sum_{r=1}^{\text{rep}} (\widehat \mu_r - \mu_{\text{true}})^2}{\text{rep}}
 $$
 for both methods.
-  **SOLUTION**
-  1)Download the original R script and write it into a `.R` file
-```{bash,eval=FALSE}
-curl http://hua-zhou.github.io/teaching/biostatm280-2019winter/slides/02-linux/runSim.R > runSim.R
-```
-  2) Expand the `runSim.R` as it required, and let's have a look at the expanded `runSim.R`
-```{bash}
-cat runSim.R
-```
-  3) Run the R code with certain arguments passed from linux
-```{bash}
-Rscript runSim.R  n=100 dist=\"t1\" rep=50 seed=280 # pass string to R
-```
+
+    **SOLUTION**
+    
+    1) Expand the `runSim.R` as it required, and let's have a look at the expanded `runSim.R`
+    ```{bash}
+    cat runSim.R
+    ```
+    
+     2) Run the R code with certain arguments passed from linux
+    ```{bash}
+    Rscript runSim.R  n=100 dist=\"gaussian\" rep=50 seed=280 # pass string to R
+    ```
   
 
 2. Modify the [`autoSim.R`](http://hua-zhou.github.io/teaching/biostatm280-2019winter/slides/02-linux/autoSim.R) script to run simulations with combinations of sample sizes `nVals = seq(100, 500, by=100)` and distributions `distTypes = c("gaussian", "t1", "t5")` and write output to appropriately named files. Use `rep = 50`, and `seed = 280`. 
-  **SOLUTION**
-  1)Download the original R script and write it into a `.R` file
-```{bash eval=FALSE}
-curl http://hua-zhou.github.io/teaching/biostatm280-2019winter/slides/02-linux/autoSim.R > autoSim.R
-```
-  2）Modify the `autoSim.R` to meet the requirements and have a look on that R scripts
-```{bash}
-cat autoSim.R
-```
-  3) Run the R code 
-```{bash}
-Rscript autoSim.R seed=280 rep=50
-```
+
+    **SOLUTION**
+
+    1. Modify the `autoSim.R` to meet the requirements and have a look on that R scripts
+    ```{bash}
+    cat autoSim.R
+    ```
+    
+    2. Run the R code 
+    ```{bash}
+    Rscript autoSim.R seed=280 rep=50
+    ```
   
 
 3. Write an R script to collect simulation results from output files and print average MSEs in a table of format
@@ -164,30 +190,33 @@ Rscript autoSim.R seed=280 rep=50
 | 500 | PrimeAvg |       |       |          |
 | 500 | SampAvg  |       |       |          |
 
+    
+    **SOLUTION**
+    
 ```{r}
-## read MSEs from txt files and built a vector to save them
-nVals <- seq(100, 500, by=100)
-distTypes = c("gaussian", "t1", "t5")
-results <- c() 
-N <- c() # built for the first coloumn of the table
-for (dist in distTypes) {
-  for (n in nVals){
-    oFile <- paste("/home/suedez/biostat-m280-2019-winter/hw1/n",n,
-                   "dist",dist, ".txt", sep="")
-    Tresults <- read.table(oFile)
-    Tresults <- Tresults[,2]
-    results <- c(results,Tresults)
-    N <- c(N,rep(n,2))
-  }
-}
+    ## read MSEs from txt files and built a vector to save them
+    nVals <- seq(100, 500, by=100)
+    distTypes = c("gaussian", "t1", "t5")
+    results <- c() 
+    N <- c() # built for the first coloumn of the table
+    for (dist in distTypes) {
+      for (n in nVals){
+        oFile <- paste("/home/suedez/biostat-m280-2019-winter/hw1/n",n,
+                       "dist",dist, ".txt", sep="")
+        Tresults <- read.table(oFile)
+        Tresults <- Tresults[,2]
+        results <- c(results,Tresults)
+       N <- c(N,rep(n,2))
+      }
+    }
 
-## built the 2nd coloumn for the table
-Method <- rep(c('PrimeAvg','SampAvg'),5)
+    ## built the 2nd coloumn for the table
+    Method <- rep(c('PrimeAvg','SampAvg'),5)
 
-## built a table to display results
-results_table <- data.frame(n=N,Method=Method,Gaussian=results[1:10],t_1=results[11:20],
+    ## built a table to display results
+    results_table <- data.frame(n=N,Method=Method,Gaussian=results[1:10],t_1=results[11:20],
                             t_5=results[21:30])
-results_table
+    results_table
 ```
 
 
