@@ -269,7 +269,7 @@ awk -F, '{print$2}' /home/m280data/NYCHVS/NYCHVS_1991.csv | sort | uniq -c | hea
 ##    3780 3
 ##    3702 4
 ##     734 5</code></pre>
-<p>Thus <code>borough</code> takes 1,2,3,4,5 as its unique values</p></li>
+<p>Thus <code>&quot;borough&quot;</code> takes <code>1,2,3,4,5</code> as its unique values</p></li>
 </ol>
 </div>
 <div id="q3.-more-fun-with-shell" class="section level2">
@@ -307,15 +307,15 @@ awk -F, '{print$2}' /home/m280data/NYCHVS/NYCHVS_1991.csv | sort | uniq -c | hea
 # Usage: bash middle.sh filename end_line num_lines
 head -n &quot;$2&quot; &quot;$1&quot; | tail -n &quot;$3&quot;</code></pre>
 <p><strong>SOLUTION</strong></p>
-<ol style="list-style-type: decimal">
+<ol style="list-style-type: lower-alpha">
 <li>After edit, let’t look at the file <code>middle.sh</code></li>
 </ol>
 <pre class="bash"><code>cat middle.sh</code></pre>
 <pre><code>## #!/bin/sh
-##     # Select lines from the middle of a file.
+##     # Select lines from the middle of a file
 ##     # Usage: bash middle.sh filename end_line num_lines
 ##     head -n &quot;$2&quot; &quot;$1&quot; | tail -n &quot;$3&quot;</code></pre>
-<ol start="2" style="list-style-type: decimal">
+<ol start="2" style="list-style-type: lower-alpha">
 <li>Using <code>chmod</code> make the file executable by the owner, and run</li>
 </ol>
 <pre class="bash"><code>chmod u+x middle.sh
@@ -325,7 +325,7 @@ head -n &quot;$2&quot; &quot;$1&quot; | tail -n &quot;$3&quot;</code></pre>
 ## 
 ## Character set encoding: ASCII
 ## </code></pre>
-<ol start="3" style="list-style-type: decimal">
+<ol start="3" style="list-style-type: lower-alpha">
 <li>Explain the output. Explain the meaning of <code>&quot;$1&quot;</code>, <code>&quot;$2&quot;</code>, and <code>&quot;$3&quot;</code> in this shell script. Why do we need the first line of the shell script?</li>
 </ol>
 <p><code>&quot;$2&quot;</code>means take the second input as the input for <code>n</code> of <code>head -n</code>; <code>&quot;$1&quot;</code> means take the first input as the input for <code>filename</code>; <code>&quot;$3&quot;</code> means take the third input as input for <code>n</code> of <code>tail -n</code>.</p>
@@ -340,7 +340,7 @@ head -n &quot;$2&quot; &quot;$1&quot; | tail -n &quot;$3&quot;</code></pre>
   \frac{\sum_{r=1}^{\text{rep}} (\widehat \mu_r - \mu_{\text{true}})^2}{\text{rep}}
 \]</span> for both methods.</p>
 <p><strong>SOLUTION</strong></p>
-<ol style="list-style-type: decimal">
+<ol style="list-style-type: lower-alpha">
 <li>Expand the <code>runSim.R</code> as it required, and let’s have a look at the expanded <code>runSim.R</code></li>
 </ol>
 <pre class="bash"><code>cat runSim.R</code></pre>
@@ -382,7 +382,7 @@ head -n &quot;$2&quot; &quot;$1&quot; | tail -n &quot;$3&quot;</code></pre>
 ##   return(x)
 ## }
 ## 
-## ##calculate MSEs for two methods
+## ## calculate MSEs for two methods
 ## MSEterrible &lt;- c()
 ## MSEclassic &lt;- c()
 ## for (i in (1:rep)) {
@@ -398,7 +398,7 @@ head -n &quot;$2&quot; &quot;$1&quot; | tail -n &quot;$3&quot;</code></pre>
 ## ## print out the results
 ## print(MSEterrible)
 ## print(MSEclassic)</code></pre>
-<ol start="2" style="list-style-type: decimal">
+<ol start="2" style="list-style-type: lower-alpha">
 <li>Run the R code with certain arguments passed from linux</li>
 </ol>
 <pre class="bash"><code>Rscript runSim.R  n=100 dist=\&quot;gaussian\&quot; rep=50 seed=280 # pass string to R</code></pre>
@@ -406,7 +406,7 @@ head -n &quot;$2&quot; &quot;$1&quot; | tail -n &quot;$3&quot;</code></pre>
 ## [1] 0.00948339</code></pre></li>
 <li><p>Modify the <a href="http://hua-zhou.github.io/teaching/biostatm280-2019winter/slides/02-linux/autoSim.R"><code>autoSim.R</code></a> script to run simulations with combinations of sample sizes <code>nVals = seq(100, 500, by=100)</code> and distributions <code>distTypes = c(&quot;gaussian&quot;, &quot;t1&quot;, &quot;t5&quot;)</code> and write output to appropriately named files. Use <code>rep = 50</code>, and <code>seed = 280</code>.</p>
 <p><strong>SOLUTION</strong></p>
-<ol style="list-style-type: decimal">
+<ol style="list-style-type: lower-alpha">
 <li>Modify the <code>autoSim.R</code> to meet the requirements and have a look on that R scripts</li>
 </ol>
 <pre class="bash"><code>cat autoSim.R</code></pre>
@@ -417,7 +417,7 @@ head -n &quot;$2&quot; &quot;$1&quot; | tail -n &quot;$3&quot;</code></pre>
 ##   eval(parse(text=arg))
 ## }
 ## 
-## ## using R call R
+## ## using R to call R
 ## nVals &lt;- seq(100, 500, by=100)
 ## distTypes = c(&quot;gaussian&quot;, &quot;t1&quot;, &quot;t5&quot;)
 ## for (dist in distTypes) {
@@ -429,7 +429,7 @@ head -n &quot;$2&quot; &quot;$1&quot; | tail -n &quot;$3&quot;</code></pre>
 ##     print(paste(&quot;sysCall=&quot;, sysCall, sep=&quot;&quot;))
 ##   }
 ## }</code></pre>
-<ol start="2" style="list-style-type: decimal">
+<ol start="2" style="list-style-type: lower-alpha">
 <li>Run the R code</li>
 </ol>
 <pre class="bash"><code>Rscript autoSim.R seed=280 rep=50</code></pre>
@@ -549,7 +549,7 @@ head -n &quot;$2&quot; &quot;$1&quot; | tail -n &quot;$3&quot;</code></pre>
        N &lt;- c(N,rep(n,2))
       }
     }
-
+    N &lt;- N[1:10]
     ## built the 2nd coloumn for the table
     Method &lt;- rep(c('PrimeAvg','SampAvg'),5)
 
@@ -567,27 +567,7 @@ head -n &quot;$2&quot; &quot;$1&quot; | tail -n &quot;$3&quot;</code></pre>
 ## 7  400 PrimeAvg 0.011268900   19.45133 0.024331410
 ## 8  400  SampAvg 0.002970676   20.53370 0.003517023
 ## 9  500 PrimeAvg 0.011176900  217.26890 0.011676280
-## 10 500  SampAvg 0.002591991   20.78780 0.003354976
-## 11 100 PrimeAvg 0.041467370 2808.42600 0.066428440
-## 12 100  SampAvg 0.009483390  230.23720 0.016750780
-## 13 200 PrimeAvg 0.018754360  799.31390 0.041847880
-## 14 200  SampAvg 0.007163651   95.87976 0.007666523
-## 15 300 PrimeAvg 0.020025440  446.40240 0.024122430
-## 16 300  SampAvg 0.003534446   53.57742 0.005471060
-## 17 400 PrimeAvg 0.011268900   19.45133 0.024331410
-## 18 400  SampAvg 0.002970676   20.53370 0.003517023
-## 19 500 PrimeAvg 0.011176900  217.26890 0.011676280
-## 20 500  SampAvg 0.002591991   20.78780 0.003354976
-## 21 100 PrimeAvg 0.041467370 2808.42600 0.066428440
-## 22 100  SampAvg 0.009483390  230.23720 0.016750780
-## 23 200 PrimeAvg 0.018754360  799.31390 0.041847880
-## 24 200  SampAvg 0.007163651   95.87976 0.007666523
-## 25 300 PrimeAvg 0.020025440  446.40240 0.024122430
-## 26 300  SampAvg 0.003534446   53.57742 0.005471060
-## 27 400 PrimeAvg 0.011268900   19.45133 0.024331410
-## 28 400  SampAvg 0.002970676   20.53370 0.003517023
-## 29 500 PrimeAvg 0.011176900  217.26890 0.011676280
-## 30 500  SampAvg 0.002591991   20.78780 0.003354976</code></pre>
+## 10 500  SampAvg 0.002591991   20.78780 0.003354976</code></pre>
 </div>
 
 

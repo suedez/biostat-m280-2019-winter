@@ -5,7 +5,7 @@ for (arg in commandArgs(TRUE)) {
   eval(parse(text=arg))
 }
 
-## using R call R
+## using R to call R
 nVals <- seq(100, 500, by=100)
 distTypes = c("gaussian", "t1", "t5")
 for (dist in distTypes) {

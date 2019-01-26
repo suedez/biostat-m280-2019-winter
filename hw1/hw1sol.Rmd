@@ -34,8 +34,7 @@ The `/home/m280data/NYCHVS` folder on teaching server contains a data set from t
     ```{bash}
     head -4 /home/m280data/NYCHVS/NYCHVS_1991.csv
     ```
-
-
+    
 2. Display number of lines in each `csv` file.
 
     **SOLUTION**
@@ -43,14 +42,12 @@ The `/home/m280data/NYCHVS` folder on teaching server contains a data set from t
     wc -l /home/m280data/NYCHVS/*.csv
     ```
 
-
 3. Display the 3 files that have the least number of lines
 
     **SOLUTION**
     ```{bash}
     wc -l /home/m280data/NYCHVS/*.csv | sort | head -3
     ```
-
 
 4. What's the output of following bash script?
     ```{bash, eval=FALSE}
@@ -75,7 +72,7 @@ The `/home/m280data/NYCHVS` folder on teaching server contains a data set from t
     # 'uniq -c' shows how many times one element occurs in the file
     awk -F, '{print$2}' /home/m280data/NYCHVS/NYCHVS_1991.csv | sort | uniq -c | head -5
     ```
-    Thus `borough` takes 1,2,3,4,5 as its unique values 
+    Thus `"borough"` takes `1,2,3,4,5` as its unique values 
 
 ## Q3. More fun with shell
 
@@ -94,7 +91,6 @@ The `/home/m280data/NYCHVS` folder on teaching server contains a data set from t
      done
     ```
 
-
 2. What's the difference between the following two commands?
     ```{bash eval=FALSE}
     echo 'hello, world' > test1.txt
@@ -107,7 +103,7 @@ The `/home/m280data/NYCHVS` folder on teaching server contains a data set from t
     **SOLUTION**
   
     The first one write `hello, world` into a text file by covering the old contents of that text file, while the second one just append `hello, world` to the text file without changing old contents.
-
+    
 3. Using your favorite text editor (e.g., `vi`), type the following and save the file as `middle.sh`:
     ```{bash eval=FALSE}
     #!/bin/sh
@@ -118,18 +114,18 @@ The `/home/m280data/NYCHVS` folder on teaching server contains a data set from t
 
     **SOLUTION**
   
-    1) After edit, let't look at the file `middle.sh`
+    a. After edit, let't look at the file `middle.sh`
     ```{bash}
     cat middle.sh
     ```
    
-    2) Using `chmod` make the file executable by the owner, and run 
+    b. Using `chmod` make the file executable by the owner, and run 
     ```{bash eval=TRUE}
     chmod u+x middle.sh
     ./middle.sh pride_and_prejudice.txt 20 5
     ```
     
-    3) Explain the output. Explain the meaning of `"$1"`, `"$2"`, and `"$3"` in this shell script. Why do we need the first line of the shell script?
+    c. Explain the output. Explain the meaning of `"$1"`, `"$2"`, and `"$3"` in this shell script. Why do we need the first line of the shell script?
 
     `"$2"`means take the second input as the input for `n` of `head -n`; `"$1"` means take the first input as the   input for `filename`; `"$3"` means take the third input as input for `n` of `tail -n`.
     
@@ -149,31 +145,32 @@ for both methods.
 
     **SOLUTION**
     
-    1) Expand the `runSim.R` as it required, and let's have a look at the expanded `runSim.R`
+    a. Expand the `runSim.R` as it required, and let's have a look at the expanded `runSim.R`
     ```{bash}
     cat runSim.R
     ```
     
-     2) Run the R code with certain arguments passed from linux
+     b. Run the R code with certain arguments passed from linux
     ```{bash}
     Rscript runSim.R  n=100 dist=\"gaussian\" rep=50 seed=280 # pass string to R
     ```
   
-
+  
 2. Modify the [`autoSim.R`](http://hua-zhou.github.io/teaching/biostatm280-2019winter/slides/02-linux/autoSim.R) script to run simulations with combinations of sample sizes `nVals = seq(100, 500, by=100)` and distributions `distTypes = c("gaussian", "t1", "t5")` and write output to appropriately named files. Use `rep = 50`, and `seed = 280`. 
 
     **SOLUTION**
 
-    1. Modify the `autoSim.R` to meet the requirements and have a look on that R scripts
+    a. Modify the `autoSim.R` to meet the requirements and have a look on that R scripts
     ```{bash}
     cat autoSim.R
     ```
     
-    2. Run the R code 
+    b. Run the R code 
     ```{bash}
     Rscript autoSim.R seed=280 rep=50
     ```
-  
+
+
 3. Write an R script to collect simulation results from output files and print average MSEs in a table of format
 
 | $n$ | Method   | Gaussian | $t_5$ | $t_1$ |
@@ -208,7 +205,7 @@ for both methods.
        N <- c(N,rep(n,2))
       }
     }
-
+    N <- N[1:10]
     ## built the 2nd coloumn for the table
     Method <- rep(c('PrimeAvg','SampAvg'),5)
 
