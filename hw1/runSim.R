@@ -36,7 +36,7 @@ Generate_data <- function(n, dist){
   return(x)
 }
 
-##calculate MSEs for two methods
+## calculate MSEs for two methods
 MSEterrible <- c()
 MSEclassic <- c()
 for (i in (1:rep)) {
