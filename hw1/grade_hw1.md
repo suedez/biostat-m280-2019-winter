@@ -69,37 +69,29 @@
 
 -   Are the materials (files and instructions) submitted to the `master` branch sufficient for reproducing all the results? Just click the `knit` button will produce the final `html` on teaching server? (-2 pts)
 
-   - Clicking knit button does not produce the final html on teaching server. The path 
+    - Clicking knit button does not produce the final html on teaching server. The path 
    
-     ```
-     oFile <- paste("/home/suedez/biostat-m280-2019-winter/hw1/n",n,"dist",dist, ".txt", sep="")
-     ``` 
-      and 
+       ```
+       oFile <- paste("/home/suedez/biostat-m280-2019-winter/hw1/n",n,"dist",dist, ".txt", sep="")
+       ``` 
+        and 
    
-     ```
-      grep -o $namei /home/suedez/pride_and_prejudice.txt | wc -l
-     ```
-   
-	   in `hw1sol.Rmd` are for your own directory on the server. Make sure your collaborators can easily run your code by using relative path, e.g. 
+       ```
+        grep -o $namei /home/suedez/pride_and_prejudice.txt | wc -l
+       ```
+	     in `hw1sol.Rmd` are for your own directory on the server. Make sure your collaborators can easily run your code by using relative path, e.g. 
+    	`oFile <- paste("./n",n,"dist",dist, ".txt", sep="")` and `grep -o $namei ./pride_and_prejudice.txt | wc -l`
 	
-  	```
-  	oFile <- paste("./n",n,"dist",dist, ".txt", sep="")
-  	``` 
-  	and 
-  	
-  	```
-  	grep -o $namei ./pride_and_prejudice.txt | wc -l
-  	```
-	
-	- `eval=FALSE` in the following code chunk
-
-  	````
-  	```{bash, eval=FALSE}
-  	curl https://www.gutenberg.org/files/1342/1342.txt > pride_and_prejudice.txt
-  	```
-  	````
-	
-	does not download `pride_and_prejudice.txt`. Include all codes necessary for easier reproducibility.
+	  - `eval=FALSE` in the following code chunk
+	  
+	  
+  	  ````
+    	```{bash, eval=FALSE}
+    	curl https://www.gutenberg.org/files/1342/1342.txt > pride_and_prejudice.txt
+    	```
+      ````
+      
+	   does not download `pride_and_prejudice.txt`. Include all codes necessary for easier reproducibility.
 
 
 -   If necessary, are there clear instructions, either in report or in a separate file, how to reproduce the results?
