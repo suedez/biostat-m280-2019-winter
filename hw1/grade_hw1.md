@@ -80,22 +80,24 @@
       grep -o $namei /home/suedez/pride_and_prejudice.txt | wc -l
      ```
    
-	in `hw1sol.Rmd` are for your own directory on the server. Make sure your collaborators can easily run your code by using relative path, e.g. 
+	   in `hw1sol.Rmd` are for your own directory on the server. Make sure your collaborators can easily run your code by using relative path, e.g. 
 	
-	```
-	oFile <- paste("./n",n,"dist",dist, ".txt", sep="")
-	```  	
-	```
-	grep -o $namei ./pride_and_prejudice.txt | wc -l
-	```
+  	```
+  	oFile <- paste("./n",n,"dist",dist, ".txt", sep="")
+  	``` 
+  	and 
+  	
+  	```
+  	grep -o $namei ./pride_and_prejudice.txt | wc -l
+  	```
 	
 	- `eval=FALSE` in the following code chunk
 
-	````
-	```{bash, eval=FALSE}
-	curl https://www.gutenberg.org/files/1342/1342.txt > pride_and_prejudice.txt
-	```
-	````
+  	````
+  	```{bash, eval=FALSE}
+  	curl https://www.gutenberg.org/files/1342/1342.txt > pride_and_prejudice.txt
+  	```
+  	````
 	
 	does not download `pride_and_prejudice.txt`. Include all codes necessary for easier reproducibility.
 
