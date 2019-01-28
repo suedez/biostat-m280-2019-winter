@@ -1,6 +1,6 @@
 *Xinrui Zhang*
 
-### Overall Grade: 100/110
+### Overall Grade: 101/110
 
 ### Quality of report: 10/10
 
@@ -43,7 +43,7 @@
     
     to create a table in the given format.
 	    
-### Usage of Git: 9/10
+### Usage of Git: 10/10
 
 -   Are branches (`master` and `develop`) correctly set up? Is the hw submission put into the `master` branch?
 
@@ -53,7 +53,7 @@
 
     16 commits for hw1. 
       
--   Is the hw1 submission tagged? (-1 pt)
+-   Is the hw1 submission tagged? 
 
     Tag name should be `hw1`.
 
