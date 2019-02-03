@@ -35,7 +35,88 @@ The FizzBuzz test is a common programming interview question used to establish i
     You must also include a write up of your implementation that broadly describes how you approached the problem and constructed your solution (think something along the lines of the methods section of a journal article).
 
     This is not a terribly complex or difficult task, and solutions in R and many other languages are easily Googleable - the point of this exercise is again to get used to the workflow and tools: RStudio, RMarkdown, Git/GitHub, Travis, etc.
+    
+    **SOLUTION**
+    
+    a) R script of fizzbuzz function
+    
+    ```{r}
+fizzbuzz <- function(x){
+  x <- as.vector(x)
+  ## transform input as a vector
+  if (is.vector(x) == F){
+    warning('\ninput should be a vector, 
+            otherwise it would be automatically transformed\n')
+    Tx <- c()
+    for (i in (1 : length(x))){
+      Tx <- c(Tx, as.character(x[[i]]))
+    }
+    x <- Tx
+  }
+  x <- as.numeric(x)
+  ## check the validity of input
+  if (all(is.na(x)) == T){
+    stop('\ninput should be integers, no valid input exists\n')
+  } else if (any(is.na(x) == T) | any((x %% 1) != 0) == T){
+    warning('\ninput should be integers, 
+             invalid inputs would be autimatically removed\n')
+    x <- x[complete.cases(x)]
+  }
+  if (all((x %% 1) != 0) == T){
+    stop('\ninput should be integers, no valid input exists\n')
+  }
+  
+  ## process x into valid input
+  x <- x[complete.cases(x)]
+  x <- x[(x %% 1) == 0]
+  
+  FBmark <- c()
+  for (i in (1 : length(x))){
+  if ((x[i] %% 15) == 0){
+    FBmark[i] <- 'FizzBuzz'
+  } else if ((x[i] %% 3) == 0){
+    FBmark[i] <- 'Fizz'
+  } else if ((x[i] %% 5) == 0){
+    FBmark[i] <- 'Buzz'
+  } else{
+    FBmark[i] <- as.character(as.integer(x[i]))
+  }
+  }
+  results_table <- data.frame(Input = x, FizzBuzz = FBmark)
+  library(knitr)
+  kable(results_table, align = 'c')
+}
+    ```
 
+    b) The fizzbuzz function will transform input into a vector and remove all invalid inputs with valid inputs left, let's try on invalid, semi-invalid, and good inputs.
+    
+    ```{r}
+    ## totally invalid input
+    inputx <- c('hello', 'world', 1.1, 3.6)
+    fizzbuzz(inputx)
+    ```
+  
+    ```{r}
+    ## semi-invalid input
+    inputx <- c(1.1, 2.8, 'ucla', 5, 6, 2)
+    fizzbuzz(inputx)
+    ```
+ 
+    ```{r}
+    ## input a dataframe rather than vector
+    inputx <- data.frame(c(1, 2, 3), c('uc', 'la', 'fight'))
+    fizzbuzz(inputx)
+    ```
+ 
+ 
+    ```{r}
+    ## good input
+    inputx <- (1:15)
+    fizzbuzz(inputx)
+    ```
+ 
+    
+  
 2. Use your FizzBuzz function to display the correct output for a variety of inputs, make sure to show what happens for both good and bad input. 
 
 ## Q3. Rcpp
