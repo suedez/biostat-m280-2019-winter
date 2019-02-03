@@ -16,6 +16,7 @@ r_packages:
   - dplyr
   - readr
   - gridExtra
+  - knitr
 os:
   - linux
   - osx
