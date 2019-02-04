@@ -88,7 +88,25 @@ fizzbuzz <- function(x){
 }
     ```
 
-    b) The fizzbuzz function will transform input into a vector and remove all invalid inputs with valid inputs left, let's try on invalid, semi-invalid, and good inputs.
+    Methods
+    a) Make sure input is a numeric vactor
+    A vector would be more convenient to do some logical judgements. In R, matrix and array can be directly transformed into a vector. However, when it comes to data frame or list, the way should be extracting each sub-list first and combine them all in a sigle vector. After combine all values into a vector, transfer that vector into numeric. All character values would be changed into NA.
+    
+    b) Check the vadility of input
+    Valid input should be integers.To define wheter a value is a integer, devide it by 1 and check the remainder.If no integer within the whole input vector, then present a error message to stop the function. If any integer exists, but values other than integer also exist, then print out a warning message saying that all invalid inputs would be automatically removed.
+    
+    c) Process input
+    Move the NA values and numbers other than integer.
+    
+    d) Mark inputs with 'FizzBuzz' 
+    Devide a integer by 3(or 5), if the ramiander is 0, the integer is mutiple of 3(or 5). To check whether a integer is multiple of both 3 and 5, devide it by 15 and check the remainder. Use for loop to check each element in input and built a vector to store each element's 'FizzBuzz' mark as it required.
+    
+    e) Print out redults with a nice layout
+    Combine the input vector and the mark vector into a data frame so that each input element can match its 'FizzBuzz' mark. Use R package to knit that data frame into a neat table.
+    
+2. Use your FizzBuzz function to display the correct output for a variety of inputs, make sure to show what happens for both good and bad input. 
+
+    The fizzbuzz function will transform input into a vector and remove all invalid inputs with valid inputs left, let's try on invalid, semi-invalid, and good inputs.
     
     ```{r}
     ## totally invalid input
@@ -117,7 +135,7 @@ fizzbuzz <- function(x){
  
     
   
-2. Use your FizzBuzz function to display the correct output for a variety of inputs, make sure to show what happens for both good and bad input. 
+
 
 ## Q3. Rcpp
 
