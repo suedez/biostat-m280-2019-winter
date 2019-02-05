@@ -4,14 +4,15 @@ author: Xinrui Zhang UID 605231530
 subtitle: Due Feb 8 @ 11:59PM
 output: html_document
 ---
-
+ 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-<p align="center">
-  <img src="./fizzbuzz.jpg" height="375">
-</p>
+[![Build Status](https://travis-ci.com/suedez/biostat-m280-2019-winter.svg?token=PZJ75ykMx3tYqKxvJXBH&branch=develop)](https://travis-ci.com/suedez/biostat-m280-2019-winter)
+
+Master branch build status:
+[![Build Status](https://travis-ci.com/suedez/biostat-m280-2019-winter.svg?token=PZJ75ykMx3tYqKxvJXBH&branch=master)](https://travis-ci.com/suedez/biostat-m280-2019-winter)
 
 ## Q1. Travis CI
 
@@ -19,9 +20,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 2. Set up Travis CI for your homework 2 solution, e.g., `hw2sol.Rmd`. Graders will look for a CI passing badge on the `README.Rmd` page of your repository:
 
-<p align="center">
-  <img src="./passing.svg" height="175">
-</p>
+
 
 
 ## Q2. FizzBuzz Test
@@ -83,8 +82,8 @@ fizzbuzz <- function(x){
   }
   }
   results_table <- data.frame(Input = x, FizzBuzz = FBmark)
-  library(knitr)
-  kable(results_table, align = 'c')
+  #library(knitr)
+  #kable(results_table, align = 'c')
 }
     ```
 
@@ -108,7 +107,7 @@ fizzbuzz <- function(x){
 
     The fizzbuzz function will transform input into a vector and remove all invalid inputs with valid inputs left, let's try on invalid, semi-invalid, and good inputs.
     
-    ```{r}
+```{r eval=FALSE, message=TRUE, warning=FALSE, include=FALSE, paged.print=FALSE}
     ## totally invalid input
     inputx <- c('hello', 'world', 1.1, 3.6)
     fizzbuzz(inputx)
@@ -142,4 +141,7 @@ fizzbuzz <- function(x){
 1. Read the online book [_Rcpp For Everyone_](https://teuder.github.io/rcpp4everyone_en/) by Masaki E. Tsuda.
 
 2. Re-do FizzBuzz test using Rcpp. 
+
+Develop branch build status:
+
 
