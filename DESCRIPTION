@@ -1,0 +1,15 @@
+##to cheat the travis
+Title: FizzBuzz game, an R function
+Version: 1.1.1
+Date: 2018-01-01
+Author: Xinrui Zhang
+Author@R:c(person(given = 'Xinrui', family = 'Zhang',role = c('aut', 'cre'), 
+email="suedez@g.ucla.edu"))
+Description: A function to give input values a 'fizzbuzz' mark
+Imports:
+  knitr,
+  rmarkdown,
+  Rcpp
+Suggests:
+less homework please
+
