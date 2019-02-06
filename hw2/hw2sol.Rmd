@@ -9,6 +9,7 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+Develop branch build status:
 [![Build Status](https://travis-ci.com/suedez/biostat-m280-2019-winter.svg?token=PZJ75ykMx3tYqKxvJXBH&branch=develop)](https://travis-ci.com/suedez/biostat-m280-2019-winter)
 
 Master branch build status:
@@ -82,8 +83,8 @@ fizzbuzz <- function(x){
   }
   }
   results_table <- data.frame(Input = x, FizzBuzz = FBmark)
-  #library(knitr)
-  #kable(results_table, align = 'c')
+  library(knitr)
+  kable(results_table, align = 'c')
 }
     ```
 
@@ -101,7 +102,7 @@ fizzbuzz <- function(x){
     Devide a integer by 3(or 5), if the ramiander is 0, the integer is mutiple of 3(or 5). To check whether a integer is multiple of both 3 and 5, devide it by 15 and check the remainder. Use for loop to check each element in input and built a vector to store each element's 'FizzBuzz' mark as it required.
     
     e) Print out redults with a nice layout
-    Combine the input vector and the mark vector into a data frame so that each input element can match its 'FizzBuzz' mark. Use R package to knit that data frame into a neat table.
+    Combine the input vector and the mark vector into a data frame so that each input element can match its 'FizzBuzz' mark. Use R package to knit that data frame into a neat table
     
 2. Use your FizzBuzz function to display the correct output for a variety of inputs, make sure to show what happens for both good and bad input. 
 
@@ -126,7 +127,7 @@ fizzbuzz <- function(x){
     ```
  
  
-    ```{r}
+```{r echo=TRUE}
     ## good input
     inputx <- (1:15)
     fizzbuzz(inputx)
@@ -142,6 +143,6 @@ fizzbuzz <- function(x){
 
 2. Re-do FizzBuzz test using Rcpp. 
 
-Develop branch build status:
+
 
 
