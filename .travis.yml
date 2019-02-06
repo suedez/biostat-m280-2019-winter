@@ -4,17 +4,6 @@ script: make hw2sol
 cache: packages
 r_packages:
   - rmarkdown
-  - neotoma
-  - purrr
-  - ggplot2
-  - plyr
-  - reshape2
-  - mgcv
-  - Bchron
-  - viridis
-  - dplyr
-  - readr
-  - gridExtra
   - knitr
   - Rcpp
 os:
