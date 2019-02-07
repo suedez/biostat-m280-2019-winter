@@ -6,5 +6,4 @@
 hw2sol: ./hw2/hw2sol.Rmd
  	Rscript -e 'rmarkdown::render(c("$<"))'
 
-clean:
- 		rm -rf *.html *.md *.docx figure/ cache/
+
