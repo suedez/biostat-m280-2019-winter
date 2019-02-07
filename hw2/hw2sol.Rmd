@@ -83,6 +83,7 @@ fizzbuzz <- function(x){
   }
   }
   results_table <- data.frame(Input = x, FizzBuzz = FBmark)
+  results_table
   library(knitr)
   kable(results_table, align = 'c')
 }
@@ -106,13 +107,8 @@ fizzbuzz <- function(x){
     
 2. Use your FizzBuzz function to display the correct output for a variety of inputs, make sure to show what happens for both good and bad input. 
 
-    The fizzbuzz function will transform input into a vector and remove all invalid inputs with valid inputs left, let's try on invalid, semi-invalid, and good inputs.
+    The fizzbuzz function will transform input into a vector and remove all invalid inputs with valid inputs left, let's try on semi-invalid and good inputs.
     
-```{r eval=FALSE, message=TRUE, warning=FALSE, include=FALSE, paged.print=FALSE}
-    ## totally invalid input
-    inputx <- c('hello', 'world', 1.1, 3.6)
-    fizzbuzz(inputx)
-    ```
   
     ```{r}
     ## semi-invalid input
@@ -129,7 +125,7 @@ fizzbuzz <- function(x){
  
 ```{r echo=TRUE}
     ## good input
-    inputx <- (1:15)
+    inputx <- (10:15)
     fizzbuzz(inputx)
     ```
  
@@ -142,6 +138,22 @@ fizzbuzz <- function(x){
 1. Read the online book [_Rcpp For Everyone_](https://teuder.github.io/rcpp4everyone_en/) by Masaki E. Tsuda.
 
 2. Re-do FizzBuzz test using Rcpp. 
+
+    a)Let's look at the Rcpp file
+```{bash}
+cat fizzbuzz.cpp
+```
+    
+    b)Let's run it
+```{r}
+library(Rcpp)
+sourceCpp('fizzbuzz.cpp')
+rcpp_fizzbuzz(c(1,2,1.5))
+rcpp_fizzbuzz(10:15)
+```
+    
+
+
 
 
 
