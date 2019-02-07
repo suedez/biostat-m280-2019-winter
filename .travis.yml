@@ -10,5 +10,5 @@ os:
   - linux
   - osx
 r:
-  - 3.5.2
-  - 2
+  - oldrel
+  - release
