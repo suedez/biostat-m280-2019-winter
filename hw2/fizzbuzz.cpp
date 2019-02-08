@@ -3,9 +3,10 @@
 using namespace Rcpp;
 
 // [[Rcpp::export]]
-  DataFrame rcpp_fizzbuzz(IntegerVector v){
+  DataFrame rcpp_fizzbuzz(RObject x){
+  Function f("validateINPUT");
+  NumericVector  v = f(x);
   CharacterVector FBmark(v.length());
-  Rcout <<"inputs should be integer, decimals would be automatically round to integer\n";
 	for (int i = 0; i< v.length(); ++i ){
 	  int a = v[i];
 		if (a % 15 == 0) {
@@ -19,5 +20,5 @@ using namespace Rcpp;
 		  }
 	}
 	DataFrame FBdf = DataFrame::create( Named("Input") = v, Named("FizzBuzz mark") = FBmark );
-	return FBdf;
+  return FBdf;
 };

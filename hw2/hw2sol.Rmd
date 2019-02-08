@@ -38,10 +38,12 @@ The FizzBuzz test is a common programming interview question used to establish i
     
     **SOLUTION**
     
-    a) R script of fizzbuzz function
+    A) R script of fizzbuzz function
     
     ```{r}
-fizzbuzz <- function(x){
+validateINPUT <- function(x){
+# this funcion is used to check the validity of inputs, give warning message,
+# and remove all invalid inputs
   x <- as.vector(x)
   ## transform input as a vector
   if (is.vector(x) == F){
@@ -69,7 +71,10 @@ fizzbuzz <- function(x){
   ## process x into valid input
   x <- x[complete.cases(x)]
   x <- x[(x %% 1) == 0]
-  
+}
+    
+fizzbuzz <- function(x){
+  x <- validateINPUT(x)
   FBmark <- c()
   for (i in (1 : length(x))){
   if ((x[i] %% 15) == 0){
@@ -89,7 +94,7 @@ fizzbuzz <- function(x){
 }
     ```
 
-    Methods
+    B) Methods
     a) Make sure input is a numeric vactor
     A vector would be more convenient to do some logical judgements. In R, matrix and array can be directly transformed into a vector. However, when it comes to data frame or list, the way should be extracting each sub-list first and combine them all in a sigle vector. After combine all values into a vector, transfer that vector into numeric. All character values would be changed into NA.
     
@@ -102,11 +107,13 @@ fizzbuzz <- function(x){
     d) Mark inputs with 'FizzBuzz' 
     Devide a integer by 3(or 5), if the ramiander is 0, the integer is mutiple of 3(or 5). To check whether a integer is multiple of both 3 and 5, devide it by 15 and check the remainder. Use for loop to check each element in input and built a vector to store each element's 'FizzBuzz' mark as it required.
     
-    e) Print out redults with a nice layout
-    Combine the input vector and the mark vector into a data frame so that each input element can match its 'FizzBuzz' mark. Use R package to knit that data frame into a neat table
+    e) Print out redults with a nice format
+    Combine the input vector and the mark vector into a data frame so that each input element can match its 'FizzBuzz' mark. Use R package to knit that data frame into a neat table.
     
 2. Use your FizzBuzz function to display the correct output for a variety of inputs, make sure to show what happens for both good and bad input. 
 
+    **SOLUTION**
+    
     The fizzbuzz function will transform input into a vector and remove all invalid inputs with valid inputs left, let's try on semi-invalid and good inputs.
     
   
@@ -123,7 +130,7 @@ fizzbuzz <- function(x){
     ```
  
  
-```{r echo=TRUE}
+    ```{r echo=TRUE}
     ## good input
     inputx <- (10:15)
     fizzbuzz(inputx)
@@ -139,22 +146,34 @@ fizzbuzz <- function(x){
 
 2. Re-do FizzBuzz test using Rcpp. 
 
-    a)Let's look at the Rcpp file
-```{bash}
-cat fizzbuzz.cpp
-```
+    **SOLUTION**
+
+    a) Let's look at the Rcpp file
+    ```{bash}
+    cat fizzbuzz.cpp
+    ```
     
-    b)Let's run it
-```{r}
-library(Rcpp)
-sourceCpp('fizzbuzz.cpp')
-rcpp_fizzbuzz(c(1,2,1.5))
-rcpp_fizzbuzz(10:15)
-```
+    b) Let's run it with semi-valid and good inputs
+    ```{r}
+    library(Rcpp)
+    sourceCpp('fizzbuzz.cpp')
+    ## semi-valid input
+    inputx <- c(1.1, 2.8, 'ucla', 5, 6, 2)
+    rcpp_fizzbuzz(inputx)
+    ```
     
+    ```{r}
+    ## semi-invalid input
+    inputx <- data.frame(c(1, 2, 3), c('uc', 'la', 'fight'))
+    rcpp_fizzbuzz(inputx)
+    ```
 
 
-
+    ```{r}
+    ## good input
+    inputx <- (10:15)
+    rcpp_fizzbuzz(inputx)
+    ```
 
 
 
