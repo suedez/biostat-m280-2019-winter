@@ -1,0 +1,179 @@
+---
+title: "Biostat M280 Homework 2"
+author: Xinrui Zhang UID 605231530
+subtitle: Due Feb 8 @ 11:59PM
+output: html_document
+---
+ 
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Develop branch build status:
+[![Build Status](https://travis-ci.com/suedez/biostat-m280-2019-winter.svg?token=PZJ75ykMx3tYqKxvJXBH&branch=develop)](https://travis-ci.com/suedez/biostat-m280-2019-winter)
+
+Master branch build status:
+[![Build Status](https://travis-ci.com/suedez/biostat-m280-2019-winter.svg?token=PZJ75ykMx3tYqKxvJXBH&branch=master)](https://travis-ci.com/suedez/biostat-m280-2019-winter)
+
+## Q1. Travis CI
+
+1. Read the blog post [_Adding CI To RMarkdown Documents_](http://www.goring.org/resources/Adding_CI_To_RMarkdown.html) by Simon Goring. Understand what is continuous integration (CI) and why we need CI.
+
+2. Set up Travis CI for your homework 2 solution, e.g., `hw2sol.Rmd`. Graders will look for a CI passing badge on the `README.Rmd` page of your repository:
+
+
+
+
+## Q2. FizzBuzz Test
+
+The FizzBuzz test is a common programming interview question used to establish if a candidate can actually program in a language that they claim experience in. The problem statement is as follows:
+
+> "Write a program that given a list of numbers as input, prints each number on their own line. But for multiples of three print "Fizz" instead of the number and for the multiples of five print “Buzz”. For numbers which are multiples of both three and five print “FizzBuzz”."
+
+1. Your goal here is to implement FizzBuzz as an R function called `fizzbuzz`. Your fizzbuzz function should conform to the description provided above in terms of output and accept an integer argument, which can either be a scalar or vector. As such, your function should correctly print `Fizz`, `Buzz`, `FizzBuzz`, or the actual number for each integer supplied on a separate line. You should program defensively - validate any input and make sure that you have a sane response to any invalid input.
+
+    You must also include a write up of your implementation that broadly describes how you approached the problem and constructed your solution (think something along the lines of the methods section of a journal article).
+
+    This is not a terribly complex or difficult task, and solutions in R and many other languages are easily Googleable - the point of this exercise is again to get used to the workflow and tools: RStudio, RMarkdown, Git/GitHub, Travis, etc.
+    
+    **SOLUTION**
+    
+    A) R script of fizzbuzz function
+    
+    ```{r}
+validateINPUT <- function(x){
+# this funcion is used to check the validity of inputs, give warning message,
+# and remove all invalid inputs
+  x <- as.vector(x)
+  ## transform input as a vector
+  if (is.vector(x) == F){
+    warning('\ninput should be a vector, 
+            otherwise it would be automatically transformed\n')
+    Tx <- c()
+    for (i in (1 : length(x))){
+      Tx <- c(Tx, as.character(x[[i]]))
+    }
+    x <- Tx
+  }
+  x <- as.numeric(x)
+  ## check the validity of input
+  if (all(is.na(x)) == T){
+    stop('\ninput should be integers, no valid input exists\n')
+  } else if (any(is.na(x) == T) | any((x %% 1) != 0) == T){
+    warning('\ninput should be integers, 
+             invalid inputs would be autimatically removed\n')
+    x <- x[complete.cases(x)]
+  }
+  if (all((x %% 1) != 0) == T){
+    stop('\ninput should be integers, no valid input exists\n')
+  }
+  
+  ## process x into valid input
+  x <- x[complete.cases(x)]
+  x <- x[(x %% 1) == 0]
+}
+    
+fizzbuzz <- function(x){
+  x <- validateINPUT(x)
+  FBmark <- c()
+  for (i in (1 : length(x))){
+  if ((x[i] %% 15) == 0){
+    FBmark[i] <- 'FizzBuzz'
+  } else if ((x[i] %% 3) == 0){
+    FBmark[i] <- 'Fizz'
+  } else if ((x[i] %% 5) == 0){
+    FBmark[i] <- 'Buzz'
+  } else{
+    FBmark[i] <- as.character(as.integer(x[i]))
+  }
+  }
+  results_table <- data.frame(Input = x, FizzBuzz = FBmark)
+  results_table
+  library(knitr)
+  kable(results_table, align = 'c')
+}
+    ```
+
+    B) Methods
+    a) Make sure input is a numeric vactor
+    A vector would be more convenient to do some logical judgements. In R, matrix and array can be directly transformed into a vector. However, when it comes to data frame or list, the way should be extracting each sub-list first and combine them all in a sigle vector. After combine all values into a vector, transfer that vector into numeric. All character values would be changed into NA.
+    
+    b) Check the vadility of input
+    Valid input should be integers.To define wheter a value is a integer, devide it by 1 and check the remainder.If no integer within the whole input vector, then present a error message to stop the function. If any integer exists, but values other than integer also exist, then print out a warning message saying that all invalid inputs would be automatically removed.
+    
+    c) Process input
+    Move the NA values and numbers other than integer.
+    
+    d) Mark inputs with 'FizzBuzz' 
+    Devide a integer by 3(or 5), if the ramiander is 0, the integer is mutiple of 3(or 5). To check whether a integer is multiple of both 3 and 5, devide it by 15 and check the remainder. Use for loop to check each element in input and built a vector to store each element's 'FizzBuzz' mark as it required.
+    
+    e) Print out redults with a nice format
+    Combine the input vector and the mark vector into a data frame so that each input element can match its 'FizzBuzz' mark. Use R package to knit that data frame into a neat table.
+    
+2. Use your FizzBuzz function to display the correct output for a variety of inputs, make sure to show what happens for both good and bad input. 
+
+    **SOLUTION**
+    
+    The fizzbuzz function will transform input into a vector and remove all invalid inputs with valid inputs left, let's try on semi-invalid and good inputs.
+    
+  
+    ```{r}
+    ## semi-invalid input
+    inputx <- c(1.1, 2.8, 'ucla', 5, 6, 2)
+    fizzbuzz(inputx)
+    ```
+ 
+    ```{r}
+    ## input a dataframe rather than vector
+    inputx <- data.frame(c(1, 2, 3), c('uc', 'la', 'fight'))
+    fizzbuzz(inputx)
+    ```
+ 
+ 
+    ```{r echo=TRUE}
+    ## good input
+    inputx <- (10:15)
+    fizzbuzz(inputx)
+    ```
+ 
+    
+  
+
+
+## Q3. Rcpp
+
+1. Read the online book [_Rcpp For Everyone_](https://teuder.github.io/rcpp4everyone_en/) by Masaki E. Tsuda.
+
+2. Re-do FizzBuzz test using Rcpp. 
+
+    **SOLUTION**
+
+    a) Let's look at the Rcpp file
+    ```{bash}
+    cat fizzbuzz.cpp
+    ```
+    
+    b) Let's run it with semi-valid and good inputs
+    ```{r}
+    library(Rcpp)
+    sourceCpp('fizzbuzz.cpp')
+    ## semi-valid input
+    inputx <- c(1.1, 2.8, 'ucla', 5, 6, 2)
+    rcpp_fizzbuzz(inputx)
+    ```
+    
+    ```{r}
+    ## semi-invalid input
+    inputx <- data.frame(c(1, 2, 3), c('uc', 'la', 'fight'))
+    rcpp_fizzbuzz(inputx)
+    ```
+
+
+    ```{r}
+    ## good input
+    inputx <- (10:15)
+    rcpp_fizzbuzz(inputx)
+    ```
+
+
+
