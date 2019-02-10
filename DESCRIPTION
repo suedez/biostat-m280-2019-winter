@@ -1,0 +1,11 @@
+Title: FizzBuzz game, an R function
+Version: 1.1.1
+Date: 2018-01-01
+Author: Xinrui Zhang
+Description: A function to give input values a 'fizzbuzz' mark
+Imports:
+  knitr,
+  rmarkdown,
+  Rcpp
+
+
