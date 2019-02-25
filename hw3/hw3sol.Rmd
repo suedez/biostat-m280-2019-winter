@@ -37,6 +37,7 @@ library(readr)
 library(data.table)
 library(dplyr)
 library(rio)
+library(magrittr)
 city_ep <- read_csv('LAEmployeePayroll.csv') #city employee and payroll
 colnames(city_ep)
 ```
@@ -56,26 +57,21 @@ city_ep %<>%
 
 ##save as rds
 library(rio)
-export(city_ep, "LAEmployeePayroll.rds")
-
-```
-
-
-```{r}
-library(tidyverse)
-LAep_tb <- tibble(department_title = city_ep$`Department Title`, 
-  job_title = city_ep$`Job Class Title`,
-  year = city_ep$Year,
-  total_paymemts = city_ep$`Total Payments`,
-  base_pay = city_ep$Base.Pay,
-  overtime_pay = city_ep$Overtime.Pay,
-  other_pay = city_ep$Other.Pay..Payroll.Explorer.,
-  cost = city_ep$`Average Benefit Cost`)
+export(city_ep, "LAep/LAep.rds")
 ```
 
 
 0. **Total payroll by LA City**. Visualize the total LA City payroll of each year, with breakdown into base pay, overtime pay, and other pay.
 
+```{r}
+##try
+filter(city_ep, Year == 2013) %>% select(Base_Pay, Overtime_Pay, Other_Pay) %>% 
+apply(2, sum) -> try1
+selected <- data.frame(type = c("base", "over", "other"), payment = try1)
+barplot(selected$payment, names.arg = selected$type)
+ggplot(data = selected, aes(x = type, y = payment), bar)
+head(payroll_selected)
+```
 
 
 
