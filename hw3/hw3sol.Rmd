@@ -4,6 +4,12 @@ subtitle: Due Mar 1 @ 11:59PM
 output: html_document
 ---
 
+Develop branch build status:
+[![Build Status](https://travis-ci.com/suedez/biostat-m280-2019-winter.svg?token=PZJ75ykMx3tYqKxvJXBH&branch=develop)](https://travis-ci.com/suedez/biostat-m280-2019-winter)
+
+Master branch build status:
+[![Build Status](https://travis-ci.com/suedez/biostat-m280-2019-winter.svg?token=PZJ75ykMx3tYqKxvJXBH&branch=master)](https://travis-ci.com/suedez/biostat-m280-2019-winter)
+
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
@@ -16,7 +22,62 @@ The `/home/m280-data/la_payroll/City_Employee_Payroll.csv` file on teaching serv
 
 1. For efficiency of the Shiny app, you should first pre-process, pare down, tidy, and save the data, e.g., as a compressed RDS file, to be used in the app.
 
+```{bash}
+ln -sf /home/m280data/la_payroll/City_Employee_Payroll.csv LAEmployeePayroll.csv
+```
+
+```{bash}
+ls -l NYParkingViolations.csv
+```
+
+
+```{r}
+library(tidyverse)
+library(readr)
+library(data.table)
+library(dplyr)
+library(rio)
+city_ep <- read_csv('LAEmployeePayroll.csv') #city employee and payroll
+colnames(city_ep)
+```
+
+##Tidy data
+
+```{r}
+names(city_ep) <- str_replace_all(names(city_ep), ".\\(.*\\)", "") 
+#remove parenthesse
+names(city_ep) <- str_replace_all(names(city_ep), " ", "_")
+library("magrittr")
+city_ep %<>%
+  select(Department_Title, Job_Class_Title,
+        Year, Total_Payments, Base_Pay,
+        Overtime_Pay, Other_Pay,
+        Average_Benefit_Cost)
+
+##save as rds
+library(rio)
+export(city_ep, "LAEmployeePayroll.rds")
+
+```
+
+
+```{r}
+library(tidyverse)
+LAep_tb <- tibble(department_title = city_ep$`Department Title`, 
+  job_title = city_ep$`Job Class Title`,
+  year = city_ep$Year,
+  total_paymemts = city_ep$`Total Payments`,
+  base_pay = city_ep$Base.Pay,
+  overtime_pay = city_ep$Overtime.Pay,
+  other_pay = city_ep$Other.Pay..Payroll.Explorer.,
+  cost = city_ep$`Average Benefit Cost`)
+```
+
+
 0. **Total payroll by LA City**. Visualize the total LA City payroll of each year, with breakdown into base pay, overtime pay, and other pay.
+
+
+
 
 0. **Who earned most?** Visualize the payroll information (total payment with breakdown into base pay, overtime pay, and other pay, Department, Job Title) of the top $n$ highest paid LA City employees in a specific year. User specifies $n$ (default 10) and year (default 2017).
 
