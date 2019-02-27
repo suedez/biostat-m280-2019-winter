@@ -64,20 +64,87 @@ export(city_ep, "LAep/LAep.rds")
 0. **Total payroll by LA City**. Visualize the total LA City payroll of each year, with breakdown into base pay, overtime pay, and other pay.
 
 ```{r}
-##try
-filter(city_ep, Year == 2013) %>% select(Base_Pay, Overtime_Pay, Other_Pay) %>% 
-apply(2, sum) -> try1
-selected <- data.frame(type = c("base", "over", "other"), payment = try1)
-barplot(selected$payment, names.arg = selected$type)
-ggplot(data = selected, aes(x = type, y = payment), bar)
-head(payroll_selected)
+##barplot???
+filter(city_ep, Year == 2018) %>% select(Base_Pay, Overtime_Pay, Other_Pay) %>% 
+apply(2, sum) -> selected1# Year == $year
+selected1 <- data.frame(type = c("Base.payment", "Overytime.payment", 
+                                "Other.payment"), payment = selected1)
+ggplot(selected1) + geom_bar(mapping = aes(x = type, y = payment), stat = 'identity') +
+  labs(title = paste('LA City Total Payroll in Year',2018), x = 'Payment Type',
+y = 'Total Payment Per Year')
+
+#barplot(selected1$payment, names.arg = selected1$type, ylab = 'total payment per year', 
+      #  main = paste('LA City Total Payroll in Year',2018), col = 'blue')
+
 ```
-
-
 
 0. **Who earned most?** Visualize the payroll information (total payment with breakdown into base pay, overtime pay, and other pay, Department, Job Title) of the top $n$ highest paid LA City employees in a specific year. User specifies $n$ (default 10) and year (default 2017).
 
+```{r}
+filter(city_ep, Year == 2016) %>% select(Department_Title, Job_Class_Title, Total_Payments, Base_Pay, Overtime_Pay, Other_Pay) %>% as.data.frame() %>% 
+arrange(desc(Total_Payments)) %>% top_n(10) %>% mutate(Rank = as.factor(1:10)) %>%
+  gather(`Base_Pay`, `Overtime_Pay`, `Other_Pay`, 
+         key = 'Type', value = 'Ammount') -> selected2
+                                                          
+
+
+ggplot(selected2) + geom_bar(stat = 'identity', 
+                    aes(x = Rank, y = Total_Payments, 
+                    fill = paste(Department_Title, '\n', Job_Class_Title))) +
+  labs(title = paste('Top', 10, 'Payment in Year', 2018), x = 'Rank',
+  y = 'Payment')
+
+ggplot(selected2) + geom_bar(stat = 'identity', 
+                             aes(x = Rank, y = Ammount, fill = Type)) +
+   labs(title = paste('Top', 10, 'Payment in Year', 2018), x = 'Rank',
+  y = 'Payment') 
+
+
+                          
+                           
+ #col = paste(Department_Title, '\n', Job_Class_Title)))
+
+
+filter(city_ep, Year == 2016) %>% select(Department_Title, Job_Class_Title, Total_Payments, Base_Pay, Overtime_Pay, Other_Pay) %>% as.data.frame() %>% group_by(Department_Title) %>%
+                    summarise(Total_Payments = sum(Total_Payments),
+                    Base_Pay = sum(Base_Pay), 
+                    Overtime_Pay = sum(Overtime_Pay),
+                    Other_Pay = sum(Other_Pay)) %>% 
+  arrange(desc(Total_Payments)) %>% top_n(10) %>% mutate(Rank = as.factor(1:10)) %>%
+  gather(`Base_Pay`, `Overtime_Pay`, `Other_Pay`, 
+         key = 'Type', value = 'Ammount') -> selected3
+
+
+
+```
+
+
 0. **Which departments earn most?** Visualize the mean or median payroll, with breakdown into base pay, overtime pay, and other pay, of top $n$ earning departments. User specifies $n$ (default 5), year (default 2018), and method (mean or median, default median).
+
+```{r}
+filter(city_ep, Year == 2016) %>% select(Department_Title, 
+          Total_Payments, Base_Pay, Overtime_Pay, Other_Pay) %>% 
+          as.data.frame() %>% 
+          group_by(Department_Title) %>%
+                    summarise(Total_Payments = sum(Total_Payments),
+                    Base_Pay = sum(Base_Pay), 
+                    Overtime_Pay = sum(Overtime_Pay),
+                    Other_Pay = sum(Other_Pay)) %>% 
+           arrange(desc(Total_Payments)) %>% top_n(10) %>% 
+           mutate(Rank = as.factor(1:10)) %>%
+           gather(`Base_Pay`, `Overtime_Pay`, `Other_Pay`, 
+           key = 'Type', value = 'Ammount') -> selected3
+selected3$Department_Title <- factor(selected3$Department_Title, levels = as.character(selected3$Department_Title[1:10]))
+ggplot(selected3) + geom_bar(stat = 'identity', 
+                  aes(x = Department_Title, y = Ammount, fill = Type), 
+                  position = 'stack') +
+  theme(axis.text.x = element_text(size = 8, family = "myFont", vjust = 0.6, 
+                                   hjust = 0.5, angle = 90)) +
+   labs(title = paste('Top', 10, 'Payment Department in Year', 2018), x = 'Department',
+  y = 'Payment') 
+
+```
+
 
 0. **Which departments cost most?** Visualize the total payroll, with breakdown into base pay, overtime pay, and other pay, of top $n$ expensive departments. User specifies $n$ (default 5) and year (default 2017).
 
