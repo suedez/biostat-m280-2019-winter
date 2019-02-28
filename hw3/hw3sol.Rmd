@@ -38,6 +38,7 @@ library(data.table)
 library(dplyr)
 library(rio)
 library(magrittr)
+library(lubridate)
 city_ep <- read_csv('LAEmployeePayroll.csv') #city employee and payroll
 colnames(city_ep)
 ```
@@ -65,12 +66,19 @@ export(city_ep, "LAep/LAep.rds")
 
 ```{r}
 ##barplot???
-filter(city_ep, Year == 2018) %>% select(Base_Pay, Overtime_Pay, Other_Pay) %>% 
-apply(2, sum) -> selected1# Year == $year
-selected1 <- data.frame(type = c("Base.payment", "Overytime.payment", 
-                                "Other.payment"), payment = selected1)
-ggplot(selected1) + geom_bar(mapping = aes(x = type, y = payment), stat = 'identity') +
-  labs(title = paste('LA City Total Payroll in Year',2018), x = 'Payment Type',
+select(city_ep, Year, Base_Pay, Overtime_Pay, 
+       Other_Pay) %>% as.data.frame() %>%
+group_by(Year) %>% summarise(Base_Pay = sum(Base_Pay),
+                   Overtime_Pay = sum(Overtime_Pay, na.rm = T),
+                   Other_Pay = sum(Other_Pay)) %>%
+gather(`Base_Pay`, `Overtime_Pay`, `Other_Pay`, 
+         key = 'Type', value = 'Ammount') -> selected1# Year == $year
+
+ggplot(selected1) + geom_bar(mapping = aes(x = as.factor(Year),
+                                           y = Ammount,
+                             fill = Type),stat = 'identity') +
+  labs(title = paste('LA City Total Payroll during Year 2013-2018'), 
+x = 'Payment Type',
 y = 'Total Payment Per Year')
 
 #barplot(selected1$payment, names.arg = selected1$type, ylab = 'total payment per year', 
@@ -82,7 +90,8 @@ y = 'Total Payment Per Year')
 
 ```{r}
 filter(city_ep, Year == 2016) %>% select(Department_Title, Job_Class_Title, Total_Payments, Base_Pay, Overtime_Pay, Other_Pay) %>% as.data.frame() %>% 
-arrange(desc(Total_Payments)) %>% top_n(10) %>% mutate(Rank = as.factor(1:10)) %>%
+arrange(desc(Total_Payments)) %>% top_n(10) %>% 
+  mutate(Rank = as.factor(1:10)) %>%
   gather(`Base_Pay`, `Overtime_Pay`, `Other_Pay`, 
          key = 'Type', value = 'Ammount') -> selected2
                                                           
@@ -105,15 +114,6 @@ ggplot(selected2) + geom_bar(stat = 'identity',
  #col = paste(Department_Title, '\n', Job_Class_Title)))
 
 
-filter(city_ep, Year == 2016) %>% select(Department_Title, Job_Class_Title, Total_Payments, Base_Pay, Overtime_Pay, Other_Pay) %>% as.data.frame() %>% group_by(Department_Title) %>%
-                    summarise(Total_Payments = sum(Total_Payments),
-                    Base_Pay = sum(Base_Pay), 
-                    Overtime_Pay = sum(Overtime_Pay),
-                    Other_Pay = sum(Other_Pay)) %>% 
-  arrange(desc(Total_Payments)) %>% top_n(10) %>% mutate(Rank = as.factor(1:10)) %>%
-  gather(`Base_Pay`, `Overtime_Pay`, `Other_Pay`, 
-         key = 'Type', value = 'Ammount') -> selected3
-
 
 
 ```
@@ -126,31 +126,73 @@ filter(city_ep, Year == 2016) %>% select(Department_Title,
           Total_Payments, Base_Pay, Overtime_Pay, Other_Pay) %>% 
           as.data.frame() %>% 
           group_by(Department_Title) %>%
-                    summarise(Total_Payments = sum(Total_Payments),
-                    Base_Pay = sum(Base_Pay), 
-                    Overtime_Pay = sum(Overtime_Pay),
-                    Other_Pay = sum(Other_Pay)) %>% 
+                    summarise(Total_Payments = mean(Total_Payments),
+                    Base_Pay = mean(Base_Pay), 
+                    Overtime_Pay = mean(Overtime_Pay),
+                    Other_Pay = mean(Other_Pay)) %>% 
            arrange(desc(Total_Payments)) %>% top_n(10) %>% 
            mutate(Rank = as.factor(1:10)) %>%
            gather(`Base_Pay`, `Overtime_Pay`, `Other_Pay`, 
            key = 'Type', value = 'Ammount') -> selected3
+
 selected3$Department_Title <- factor(selected3$Department_Title, levels = as.character(selected3$Department_Title[1:10]))
+
 ggplot(selected3) + geom_bar(stat = 'identity', 
                   aes(x = Department_Title, y = Ammount, fill = Type), 
                   position = 'stack') +
-  theme(axis.text.x = element_text(size = 8, family = "myFont", vjust = 0.6, 
-                                   hjust = 0.5, angle = 90)) +
-   labs(title = paste('Top', 10, 'Payment Department in Year', 2018), x = 'Department',
-  y = 'Payment') 
+
+  theme(axis.text.x = element_text(size = 6, vjust = 1, 
+                                   hjust = 1, angle = 60)) +
+   labs(title = paste('Top', 10, 'Payment Department in Year', 2018), 
+        x = 'Department',
+        y = 'MeanPayment') 
 
 ```
 
 
 0. **Which departments cost most?** Visualize the total payroll, with breakdown into base pay, overtime pay, and other pay, of top $n$ expensive departments. User specifies $n$ (default 5) and year (default 2017).
 
+```{r}
+filter(city_ep, Year == 2016) %>% select(Department_Title, 
+      Average_Benefit_Cost, Base_Pay, Overtime_Pay, Other_Pay) %>% 
+      as.data.frame() %>% group_by(Department_Title) %>% 
+      summarise(Average_Benefit_Cost = -sum(Average_Benefit_Cost),
+                    Base_Pay = sum(Base_Pay), 
+                    Overtime_Pay = sum(Overtime_Pay),
+                    Other_Pay = sum(Other_Pay)) %>%
+      arrange(desc(-Average_Benefit_Cost))%>% 
+      top_n(10) %>%
+      gather(`Average_Benefit_Cost`, `Base_Pay`, 
+             `Overtime_Pay`, `Other_Pay`, 
+           key = 'Type', value = 'Ammount') -> selected4
+
+selected4$Department_Title <- factor(selected4$Department_Title, levels = as.character(selected4$Department_Title[1:10])) 
+
+ggplot(selected4) + geom_bar(stat = 'identity', 
+                  aes(x = Department_Title, y = Ammount, fill = Type), 
+                  position = 'identity') + 
+  theme(axis.text.x = element_text(size = 8, family = "myFont", vjust = 0.6, 
+                                   hjust = 0.5, angle = 90)) +
+   labs(title = paste('Top', 10, 'Cost Department in Year', 2018), 
+        x = 'Department',
+        y = 'Payment')
+
+```
+
+
 0. Visualize any other information you are interested in.
 
+```{r}
+
+```
+
+
 0. Publish your Shiny app to <https://www.shinyapps.io> and share the link.
+
+```{r message=FALSE, warning=FALSE}
+runApp("/home/suedez/biostat-m280-2019-winter/hw3/LAep/app.R")
+```
+
 
 ## Q2 LA City Parking War
 
@@ -158,16 +200,115 @@ The SQLite database `/home/m280data/la_parking/LA_Parking_Citations.sqlite` on t
 
 1. How many tickets are in this data set? Which time period do these tickets span? Which years have most data?
 
+```{r}
+library("DBI")
+library("RSQLite")
+```
+
+
+```{bash}
+ln -sf /home/m280data/la_parking/LA_Parking_Citations.sqlite LAparking.sqlite
+ls -l LAparking.sqlite
+```
+
+```{r message=FALSE, warning=FALSE}
+if (Sys.info()[["sysname"]] == "Linux") {
+  db <- dbConnect(RSQLite::SQLite(), 
+                  dbname = "LAparking.sqlite")
+} else if (Sys.info()[["sysname"]] == "Darwin") {
+  db <- dbConnect(RSQLite::SQLite(), 
+                  dbname = "./LA_Parking_Citations.sqlite")
+                  }
+dbListTables(db)
+LA_sql <- dplyr::tbl(db, "latix") #use tbl function in dplyr package
+str(LA_sql) #????????????????????????????????????
+```
+
+```{r message=FALSE, warning=FALSE, paged.print=TRUE}
+LA_sql %>% print(width = Inf)
+LA_sql %>% summarise(n = n()) -> ntickets
+library(lubridate)
+
+##time range
+LA_sql %>% mutate(time = paste(Issue_Year, Issue_Month, Issue_Day,
+                    Issue_Hour, Issue_Minute, sep = '-')) %>%
+  select(time)  %>% summarise(Time_begin = min(time),
+                              Time_end = max(time))
+##wich year most tickets
+LA_sql %>% group_by(Issue_Year) %>% summarise(n = n()) %>% 
+  ggplot() +
+  geom_bar(stat = 'identity', aes(x = Issue_Year,
+                                  y = n)) +
+  labs(title = paste('Ammounts of tickets in year 2015-2019'), 
+        x = 'Issue Year',
+        y = 'Ammout of Tickets')
+```
+
+    As it shown above, the time range is from 1:00,October 1st, 2015 to 9:09, January 1st, 2019. The year has most tickets is 2017.
+
 0. When (which hour, weekday, month day, and month) are you most likely to get a ticket and when are you least likely to get a ticket?
 
+```{r}
+LA_sql %>% group_by(Issue_Month) %>% summarise(n = n()) %>% 
+  arrange(desc(n)) -> MONTH
+LA_sql %>% group_by(Issue_Day) %>% summarise(n = n()) %>% 
+  arrange(desc(n)) -> DAY
+LA_sql %>% group_by(Issue_Wday) %>% summarise(n = n()) %>% 
+  arrange(desc(n)) -> WDAY
+LA_sql %>% group_by(Issue_Hour) %>% summarise(n = n()) %>% 
+  arrange(desc(n)) -> HOUR
+
+```
+
+    As most likely month, month day, week day, hour to get a ticket are, respectively, August, 13th, Wednesday，12:00.
+    The least likely month, month day, week day, hour to get a ticket are, respectively, February, 31th, Monday, 5:00. But I won't be lax at the 31th since not every month has the 31th so that 
+    
 0. Which car makes received most citations?
+
+```{r}
+LA_sql %>% group_by(Make) %>% summarise(n = n()) %>% 
+  arrange(desc(n)) %>% filter(is.na(Make) == F)
+
+```
+
+    TOYT received most citations.
 
 0. How many different colors of cars were ticketed? Which color attracted most tickets?
 
+```{r}
+LA_sql %>% group_by(Color) %>% summarise(n = n()) %>% arrange(desc(n)) %>%
+  filter(is.na(Color) == F) 
+```
+
+    The color black is the most attractive color, but maybe it is because black is the most common color for cars. There are 103 different colors.
+
 0. What are the most common ticket types?
+
+```{r}
+LA_sql %>% group_by(Violation_Description) %>% summarise(n = n()) %>% arrange(desc(n))
+```
+
+    The most common ticket type is No Park/Street Clean.
 
 0. How much money was collected on parking tickets in 2016, 2017 and 2018?
 
+```{r}
+LA_sql %>% filter(Issue_Year == 2016 | Issue_Year == 2017 |
+                  Issue_Year == 2018) %>% select(Fine_amount, 
+                                           Issue_Year) %>%
+  group_by(Issue_Year) %>% 
+  summarise(Money = sum(Fine_amount)) %>%
+  ggplot() + geom_bar(stat = 'identity',
+                      aes(x = Issue_Year, 
+                          y = Money, fill = Money)) +
+  labs(title = 'Ammounts of fine collected in year 2016-2018', 
+        x = 'Year',
+        y = 'Ammout of Fine')
+```
+
 0. If you've been ticketed in LA County, did you find your ticket in this data set?
+
+    I don't even have a car hahaha.
+
 
 0. Read the blog <http://www.brettrics.com/9-million-parking-tickets-la/> and try to reproduce plots using your data.

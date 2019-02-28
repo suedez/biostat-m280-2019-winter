@@ -6,6 +6,11 @@ r_packages:
   - rmarkdown
   - knitr
   - Rcpp
+  - shiny
+  - readr
+  - dplyr
+  - tidyverse
+  - ggplot2
 os:
   - linux
   - osx
