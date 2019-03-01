@@ -4,12 +4,6 @@ subtitle: Due Mar 1 @ 11:59PM
 output: html_document
 ---
 
-Develop branch build status:
-[![Build Status](https://travis-ci.com/suedez/biostat-m280-2019-winter.svg?token=PZJ75ykMx3tYqKxvJXBH&branch=develop)](https://travis-ci.com/suedez/biostat-m280-2019-winter)
-
-Master branch build status:
-[![Build Status](https://travis-ci.com/suedez/biostat-m280-2019-winter.svg?token=PZJ75ykMx3tYqKxvJXBH&branch=master)](https://travis-ci.com/suedez/biostat-m280-2019-winter)
-
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
@@ -24,14 +18,11 @@ The `/home/m280-data/la_payroll/City_Employee_Payroll.csv` file on teaching serv
 
 ```{bash}
 ln -sf /home/m280data/la_payroll/City_Employee_Payroll.csv LAEmployeePayroll.csv
-```
-
-```{bash}
 ls -l NYParkingViolations.csv
 ```
 
-
-```{r}
+####A.Load packages and read in cvs file
+```{r message=FALSE, warning=FALSE}
 library(tidyverse)
 library(readr)
 library(data.table)
@@ -43,7 +34,7 @@ city_ep <- read_csv('LAEmployeePayroll.csv') #city employee and payroll
 colnames(city_ep)
 ```
 
-##Tidy data
+####B.Process colnames and chose variables needed then export tibble in a rds file.
 
 ```{r}
 names(city_ep) <- str_replace_all(names(city_ep), ".\\(.*\\)", "") 
@@ -55,144 +46,18 @@ city_ep %<>%
         Year, Total_Payments, Base_Pay,
         Overtime_Pay, Other_Pay,
         Average_Benefit_Cost)
-
 ##save as rds
 library(rio)
 export(city_ep, "LAep/LAep.rds")
 ```
 
-
-0. **Total payroll by LA City**. Visualize the total LA City payroll of each year, with breakdown into base pay, overtime pay, and other pay.
-
-```{r}
-##barplot???
-select(city_ep, Year, Base_Pay, Overtime_Pay, 
-       Other_Pay) %>% as.data.frame() %>%
-group_by(Year) %>% summarise(Base_Pay = sum(Base_Pay),
-                   Overtime_Pay = sum(Overtime_Pay, na.rm = T),
-                   Other_Pay = sum(Other_Pay)) %>%
-gather(`Base_Pay`, `Overtime_Pay`, `Other_Pay`, 
-         key = 'Type', value = 'Ammount') -> selected1# Year == $year
-
-ggplot(selected1) + geom_bar(mapping = aes(x = as.factor(Year),
-                                           y = Ammount,
-                             fill = Type),stat = 'identity') +
-  labs(title = paste('LA City Total Payroll during Year 2013-2018'), 
-x = 'Payment Type',
-y = 'Total Payment Per Year')
-
-#barplot(selected1$payment, names.arg = selected1$type, ylab = 'total payment per year', 
-      #  main = paste('LA City Total Payroll in Year',2018), col = 'blue')
-
-```
-
-0. **Who earned most?** Visualize the payroll information (total payment with breakdown into base pay, overtime pay, and other pay, Department, Job Title) of the top $n$ highest paid LA City employees in a specific year. User specifies $n$ (default 10) and year (default 2017).
-
-```{r}
-filter(city_ep, Year == 2016) %>% select(Department_Title, Job_Class_Title, Total_Payments, Base_Pay, Overtime_Pay, Other_Pay) %>% as.data.frame() %>% 
-arrange(desc(Total_Payments)) %>% top_n(10) %>% 
-  mutate(Rank = as.factor(1:10)) %>%
-  gather(`Base_Pay`, `Overtime_Pay`, `Other_Pay`, 
-         key = 'Type', value = 'Ammount') -> selected2
-                                                          
-
-
-ggplot(selected2) + geom_bar(stat = 'identity', 
-                    aes(x = Rank, y = Total_Payments, 
-                    fill = paste(Department_Title, '\n', Job_Class_Title))) +
-  labs(title = paste('Top', 10, 'Payment in Year', 2018), x = 'Rank',
-  y = 'Payment')
-
-ggplot(selected2) + geom_bar(stat = 'identity', 
-                             aes(x = Rank, y = Ammount, fill = Type)) +
-   labs(title = paste('Top', 10, 'Payment in Year', 2018), x = 'Rank',
-  y = 'Payment') 
-
-
-                          
-                           
- #col = paste(Department_Title, '\n', Job_Class_Title)))
-
-
-
-
-```
-
-
-0. **Which departments earn most?** Visualize the mean or median payroll, with breakdown into base pay, overtime pay, and other pay, of top $n$ earning departments. User specifies $n$ (default 5), year (default 2018), and method (mean or median, default median).
-
-```{r}
-filter(city_ep, Year == 2016) %>% select(Department_Title, 
-          Total_Payments, Base_Pay, Overtime_Pay, Other_Pay) %>% 
-          as.data.frame() %>% 
-          group_by(Department_Title) %>%
-                    summarise(Total_Payments = mean(Total_Payments),
-                    Base_Pay = mean(Base_Pay), 
-                    Overtime_Pay = mean(Overtime_Pay),
-                    Other_Pay = mean(Other_Pay)) %>% 
-           arrange(desc(Total_Payments)) %>% top_n(10) %>% 
-           mutate(Rank = as.factor(1:10)) %>%
-           gather(`Base_Pay`, `Overtime_Pay`, `Other_Pay`, 
-           key = 'Type', value = 'Ammount') -> selected3
-
-selected3$Department_Title <- factor(selected3$Department_Title, levels = as.character(selected3$Department_Title[1:10]))
-
-ggplot(selected3) + geom_bar(stat = 'identity', 
-                  aes(x = Department_Title, y = Ammount, fill = Type), 
-                  position = 'stack') +
-
-  theme(axis.text.x = element_text(size = 6, vjust = 1, 
-                                   hjust = 1, angle = 60)) +
-   labs(title = paste('Top', 10, 'Payment Department in Year', 2018), 
-        x = 'Department',
-        y = 'MeanPayment') 
-
-```
-
-
-0. **Which departments cost most?** Visualize the total payroll, with breakdown into base pay, overtime pay, and other pay, of top $n$ expensive departments. User specifies $n$ (default 5) and year (default 2017).
-
-```{r}
-filter(city_ep, Year == 2016) %>% select(Department_Title, 
-      Average_Benefit_Cost, Base_Pay, Overtime_Pay, Other_Pay) %>% 
-      as.data.frame() %>% group_by(Department_Title) %>% 
-      summarise(Average_Benefit_Cost = -sum(Average_Benefit_Cost),
-                    Base_Pay = sum(Base_Pay), 
-                    Overtime_Pay = sum(Overtime_Pay),
-                    Other_Pay = sum(Other_Pay)) %>%
-      arrange(desc(-Average_Benefit_Cost))%>% 
-      top_n(10) %>%
-      gather(`Average_Benefit_Cost`, `Base_Pay`, 
-             `Overtime_Pay`, `Other_Pay`, 
-           key = 'Type', value = 'Ammount') -> selected4
-
-selected4$Department_Title <- factor(selected4$Department_Title, levels = as.character(selected4$Department_Title[1:10])) 
-
-ggplot(selected4) + geom_bar(stat = 'identity', 
-                  aes(x = Department_Title, y = Ammount, fill = Type), 
-                  position = 'identity') + 
-  theme(axis.text.x = element_text(size = 8, family = "myFont", vjust = 0.6, 
-                                   hjust = 0.5, angle = 90)) +
-   labs(title = paste('Top', 10, 'Cost Department in Year', 2018), 
-        x = 'Department',
-        y = 'Payment')
-
-```
-
-
 0. Visualize any other information you are interested in.
 
-```{r}
-
-```
-
+I'd like to see the 6-year average payments composition of a chosen department.
 
 0. Publish your Shiny app to <https://www.shinyapps.io> and share the link.
 
-```{r message=FALSE, warning=FALSE}
-runApp("/home/suedez/biostat-m280-2019-winter/hw3/LAep/app.R")
-```
-
+See my Shiny app on <https://suedez.shinyapps.io/laep/>.
 
 ## Q2 LA City Parking War
 
@@ -230,10 +95,14 @@ LA_sql %>% summarise(n = n()) -> ntickets
 library(lubridate)
 
 ##time range
-LA_sql %>% mutate(time = paste(Issue_Year, Issue_Month, Issue_Day,
-                    Issue_Hour, Issue_Minute, sep = '-')) %>%
-  select(time)  %>% summarise(Time_begin = min(time),
-                              Time_end = max(time))
+options(scipen=100) # don't round
+LA_sql %>% mutate(time = Issue_Year * 10e7 + 
+                    Issue_Month * 10e5 + 
+                    Issue_Day * 10e3 +
+                    Issue_Hour * 10e1 + 
+                    Issue_Minute) %>%
+  summarise(Time_begin = min(time),
+             Time_end = max(time))
 ##wich year most tickets
 LA_sql %>% group_by(Issue_Year) %>% summarise(n = n()) %>% 
   ggplot() +
@@ -244,7 +113,7 @@ LA_sql %>% group_by(Issue_Year) %>% summarise(n = n()) %>%
         y = 'Ammout of Tickets')
 ```
 
-    As it shown above, the time range is from 1:00,October 1st, 2015 to 9:09, January 1st, 2019. The year has most tickets is 2017.
+    As it shown above, the time range is from 1:00,July 2nd, 2015 to 23:58, January 25th, 2019. The year has most tickets is 2017.
 
 0. When (which hour, weekday, month day, and month) are you most likely to get a ticket and when are you least likely to get a ticket?
 
@@ -312,3 +181,18 @@ LA_sql %>% filter(Issue_Year == 2016 | Issue_Year == 2017 |
 
 
 0. Read the blog <http://www.brettrics.com/9-million-parking-tickets-la/> and try to reproduce plots using your data.
+
+```{r}
+LA_sql %>% 
+```
+
+
+
+
+
+
+
+
+
+
+
