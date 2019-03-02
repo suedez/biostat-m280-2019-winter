@@ -1,6 +1,7 @@
 ---
 title: "Biostat M280 Homework 3"
 subtitle: Due Mar 1 @ 11:59PM
+author: Xinrui Zhang UID:605231530
 output: html_document
 ---
 
@@ -29,18 +30,16 @@ library(data.table)
 library(dplyr)
 library(rio)
 library(magrittr)
-library(lubridate)
 city_ep <- read_csv('LAEmployeePayroll.csv') #city employee and payroll
 colnames(city_ep)
 ```
 
 ####B.Process colnames and chose variables needed then export tibble in a rds file.
 
-```{r}
+```{r message=FALSE, warning=FALSE}
 names(city_ep) <- str_replace_all(names(city_ep), ".\\(.*\\)", "") 
 #remove parenthesse
 names(city_ep) <- str_replace_all(names(city_ep), " ", "_")
-library("magrittr")
 city_ep %<>%
   select(Department_Title, Job_Class_Title,
         Year, Total_Payments, Base_Pay,
@@ -65,7 +64,7 @@ The SQLite database `/home/m280data/la_parking/LA_Parking_Citations.sqlite` on t
 
 1. How many tickets are in this data set? Which time period do these tickets span? Which years have most data?
 
-```{r}
+```{r message=FALSE, warning=FALSE}
 library("DBI")
 library("RSQLite")
 ```
@@ -86,14 +85,16 @@ if (Sys.info()[["sysname"]] == "Linux") {
                   }
 dbListTables(db)
 LA_sql <- dplyr::tbl(db, "latix") #use tbl function in dplyr package
-str(LA_sql) #????????????????????????????????????
+str(LA_sql)
 ```
 
 ```{r message=FALSE, warning=FALSE, paged.print=TRUE}
-LA_sql %>% print(width = Inf)
-LA_sql %>% summarise(n = n()) -> ntickets
-library(lubridate)
+LA_sql %>% summarise(n = n())
+```
+There are `7656418` tickets in total.
 
+
+```{r message=FALSE, warning=FALSE}
 ##time range
 options(scipen=100) # don't round
 LA_sql %>% mutate(time = Issue_Year * 10e7 + 
@@ -113,63 +114,93 @@ LA_sql %>% group_by(Issue_Year) %>% summarise(n = n()) %>%
         y = 'Ammout of Tickets')
 ```
 
-    As it shown above, the time range is from 1:00,July 2nd, 2015 to 23:58, January 25th, 2019. The year has most tickets is 2017.
+As it shown above, the time range is from `1:00,July 2nd, 2015` to `23:58, January 25th, 2019`. The year has most tickets is `2017`.
 
 0. When (which hour, weekday, month day, and month) are you most likely to get a ticket and when are you least likely to get a ticket?
 
-```{r}
+```{r message=FALSE, warning=FALSE}
 LA_sql %>% group_by(Issue_Month) %>% summarise(n = n()) %>% 
-  arrange(desc(n)) -> MONTH
+  arrange(desc(n)) %>%
+  select(Issue_Month, n) %>% 
+  filter(is.na(Issue_Month) == F) %>%
+  collect() -> MONTH
+MONTH %>%
+  filter(n == max(n) | n == min(n))
 LA_sql %>% group_by(Issue_Day) %>% summarise(n = n()) %>% 
-  arrange(desc(n)) -> DAY
+  arrange(desc(n)) %>%
+  select(Issue_Day, n) %>% 
+  filter(is.na(Issue_Day) == F) %>%
+  collect() -> DAY
+DAY %>%
+  filter(n == max(n) | n == min(n)) 
 LA_sql %>% group_by(Issue_Wday) %>% summarise(n = n()) %>% 
-  arrange(desc(n)) -> WDAY
+  arrange(desc(n)) %>%
+  select(Issue_Wday, n) %>% 
+  filter(is.na(Issue_Wday) == F) %>%
+  collect() -> WDAY
+WDAY %>%
+  filter(n == max(n) | n == min(n))
 LA_sql %>% group_by(Issue_Hour) %>% summarise(n = n()) %>% 
-  arrange(desc(n)) -> HOUR
+  arrange(desc(n)) %>%
+  select(Issue_Hour, n) %>%
+  filter(is.na(Issue_Hour) == F) %>%
+  collect() -> HOUR
+HOUR %>%
+  filter(n == max(n) | n == min(n))
+
 
 ```
 
-    As most likely month, month day, week day, hour to get a ticket are, respectively, August, 13th, Wednesday，12:00.
-    The least likely month, month day, week day, hour to get a ticket are, respectively, February, 31th, Monday, 5:00. But I won't be lax at the 31th since not every month has the 31th so that 
+As most likely month, month day, week day, hour to get a ticket are, respectively, `August`, `13th`, `Wednesday`，`12:00`.
+The least likely month, month day, week day, hour to get a ticket are, respectively, `February`, `31th`, `Monday`, `5:00`. 
     
 0. Which car makes received most citations?
 
-```{r}
+```{r message=FALSE, warning=FALSE}
 LA_sql %>% group_by(Make) %>% summarise(n = n()) %>% 
-  arrange(desc(n)) %>% filter(is.na(Make) == F)
+  arrange(desc(n)) %>% filter(is.na(Make) == F) %>%
+  select(Make, n)
 
 ```
 
-    TOYT received most citations.
+`TOYT` received most citations.
 
 0. How many different colors of cars were ticketed? Which color attracted most tickets?
 
-```{r}
+```{r message=FALSE, warning=FALSE}
 LA_sql %>% group_by(Color) %>% summarise(n = n()) %>% arrange(desc(n)) %>%
-  filter(is.na(Color) == F) 
+  filter(is.na(Color) == F) %>% collect()
 ```
 
-    The color black is the most attractive color, but maybe it is because black is the most common color for cars. There are 103 different colors.
+There are 103 different colors.
+The color `black` is the most attractive color, but maybe it is because black is the most common color for cars. 
 
 0. What are the most common ticket types?
 
-```{r}
-LA_sql %>% group_by(Violation_Description) %>% summarise(n = n()) %>% arrange(desc(n))
+```{r message=FALSE, warning=FALSE}
+LA_sql %>% group_by(Violation_Description) %>% 
+  summarise(n = n()) %>% 
+  arrange(desc(n)) 
 ```
 
-    The most common ticket type is No Park/Street Clean.
+The most common ticket type is `No Park/Street Clean`.
 
 0. How much money was collected on parking tickets in 2016, 2017 and 2018?
 
-```{r}
+```{r message=FALSE, warning=FALSE}
 LA_sql %>% filter(Issue_Year == 2016 | Issue_Year == 2017 |
                   Issue_Year == 2018) %>% select(Fine_amount, 
                                            Issue_Year) %>%
   group_by(Issue_Year) %>% 
-  summarise(Money = sum(Fine_amount)) %>%
-  ggplot() + geom_bar(stat = 'identity',
-                      aes(x = Issue_Year, 
-                          y = Money, fill = Money)) +
+  summarise(Money = sum(Fine_amount))  %>%
+  ggplot(aes(x = Issue_Year, 
+              y = Money, fill = Money)) + 
+  geom_bar(stat = 'identity') +
+  geom_text(aes(label = Money, 
+                vjust = -0.1, 
+                hjust = 0.5), 
+            show_guide = FALSE,
+            size = 3) +
   labs(title = 'Ammounts of fine collected in year 2016-2018', 
         x = 'Year',
         y = 'Ammout of Fine')
@@ -177,14 +208,72 @@ LA_sql %>% filter(Issue_Year == 2016 | Issue_Year == 2017 |
 
 0. If you've been ticketed in LA County, did you find your ticket in this data set?
 
-    I don't even have a car hahaha.
+I don't even have a car hahaha.
 
 
 0. Read the blog <http://www.brettrics.com/9-million-parking-tickets-la/> and try to reproduce plots using your data.
 
-```{r}
-LA_sql %>% 
+####a. Calendar Heatmap 
+```{r message=FALSE, warning=FALSE}
+brks <- seq(1, 12, 1)
+lbs <- c('JAN', 'FEB', 'MAR', 'APR', 'MAY',
+         'JUN', 'JUL', 'AUG', 'SEP',
+         'OCT', 'NOV', 'DEC')
+brksx <- seq(1, 31, 1)
+lbsx <- 1:31
+LA_sql %>% group_by(Issue_Year, Issue_Month, Issue_Day) %>%
+  summarize(n = n()) %>% filter(is.na(Issue_Year) == F)  %>%
+  mutate(Month = paste(Issue_Month)) %>%
+  ggplot(aes(x = Issue_Day, y = Month,
+         fill = n)) +
+  scale_y_discrete(breaks = brks,   # Breaks
+         labels = lbs) +
+  scale_x_continuous(breaks = brksx,   # Breaks
+         labels = lbsx) + 
+  theme(axis.text.y = element_text(size = 6)) +
+  geom_tile(colour = "white") +
+  facet_grid(rows = vars(Issue_Year)) + 
+  coord_cartesian(xlim = c(1, 31)) +
+  scale_fill_gradient(low="white", high="red") + 
+  labs(x = 'Month Day',
+        y = 'Month') +
+  guides(fill = guide_colorbar(
+  title = 'Ammount of Tickets'))
+
 ```
+
+
+####b.Number of tickets during day hours for the top 7 most common vilation types
+```{r message=FALSE, warning=FALSE}
+brks <- seq(1, 24, 1)
+labs <- seq(1, 24, 1)
+LA_sql  %>% 
+  filter(Violation_Description == 'NO PARK/STREET CLEAN' |
+         Violation_Description == 'METER EXP.' |
+         Violation_Description == 'RED ZONE' |
+         Violation_Description == 'PREFERENTIAL PARKING' |  
+         Violation_Description == 'DISPLAY OF TABS' |  
+         Violation_Description == 'NO PARKING' |
+         Violation_Description == 'DISPLAY OF PLATES') %>%
+  group_by(Violation_Description, Issue_Hour) %>%
+  filter(is.na(Issue_Hour) == F) %>% 
+  summarise(n = n()) %>%
+  ggplot(aes(x = Issue_Hour,
+             y = n)) + 
+  geom_line(aes(group = Violation_Description,
+                color = Violation_Description)) +
+  scale_x_continuous(breaks = brks,   # Breaks
+         labels = labs) +
+  labs(x = 'Day Hour',
+        y = 'Ammount of Tickets',
+       title = 'Number of Ticket during Day Hours') +
+  guides(fill = guide_colorbar(
+  title = 'Violation Type'))
+
+  
+
+```
+
 
 
 
